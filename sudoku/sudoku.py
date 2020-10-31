@@ -14,8 +14,8 @@ class Sudoku:
         return dump
 
     def set(self, grid_string: str):
-        values = [c for c in grid_string if c.isnumeric()]
-        self.grid = np.reshape(values, (9, 9))
+        values = [int(c) for c in grid_string if c.isnumeric()]
+        self.grid[:] = np.reshape(values, (9, 9))
 
     def clone(self):
         s = Sudoku()
@@ -41,6 +41,8 @@ class Sudoku:
 
     @property
     def possible_entries(self):
+        assert self.check(), "Sudoku fails a self-check"
+
         class PossibleEntries:
             def __init__(self, sudoku: "Soduku"):
                 self.sudoku = sudoku
