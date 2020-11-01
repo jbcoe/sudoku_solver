@@ -10,7 +10,11 @@ if [ ${1:-" "} == "clean" ]; then
     )
 fi
 
-python -m venv "${PYENV}"
+if [ ! -d "${PYENV}" ]; then
+    echo Creating a fresh PyEnv at "${PYENV}"
+    python -m venv "${PYENV}"
+    ${PYENV}/bin/pip install --upgrade -r requirements.txt; 
+fi
+
 source "${PYENV}/bin/activate"
-pip install --upgrade -r requirements.txt
-python -m nose -v "${DIR}/tests"
+python -m pytest -n auto -v "${DIR}/tests"
