@@ -6,6 +6,19 @@ import numpy as np
 def switch_rows(
     s: Sudoku, row_block: int, first: int, second: int, inplace: bool = False
 ) -> Sudoku:
+    """Switch the rows specified within the specified block. Maintains Sudoku invariants.
+
+    Args:
+        s: Sudoku, the sudoku to transform
+        row_block: int, the index in [0,1,2] of the block to be transformed.
+        first: int, the index in [0,1,2] within the block of the first row to be switched.
+        second: int, the index in [0,1,2] within the block of the second row to be switched.
+        inplace: bool (default=False) perform the transformation inplace on the supplied sudoku.
+
+    Returns:
+        A transformed Sudoku.
+    """
+
     assert row_block in list(
         range(3)
     ), f"row_block '{row_block}' must be a block index [0,1,2]"
@@ -36,6 +49,18 @@ def switch_rows(
 def switch_columns(
     s: Sudoku, column_block: int, first: int, second: int, inplace: bool = False
 ) -> Sudoku:
+    """Switch the columns specified within the specified block. Maintains Sudoku invariants.
+
+    Args:
+        s: Sudoku, the sudoku to transform
+        column_block: int, the index in [0,1,2] of the block to be transformed.
+        first: int, the index in [0,1,2] within the block of the first column to be switched.
+        second: int, the index in [0,1,2] within the block of the second column to be switched.
+        inplace: bool (default=False) perform the transformation inplace on the supplied sudoku.
+
+    Returns:
+        A transformed Sudoku.
+    """
     assert column_block in list(
         range(3)
     ), f"column_block '{column_block}' must be a block index [0,1,2]"
@@ -66,6 +91,17 @@ def switch_columns(
 def switch_column_blocks(
     s: Sudoku, first: int, second: int, inplace: bool = False
 ) -> Sudoku:
+    """Switch the specified column blocks. Maintains Sudoku invariants.
+
+    Args:
+        s: Sudoku, the sudoku to transform
+        first: int, the index in [0,1,2] of the first column block to be switched.
+        second: int, the index in [0,1,2] of the second column block to be switched.
+        inplace: bool (default=False) perform the transformation inplace on the supplied sudoku.
+
+    Returns:
+        A transformed Sudoku.
+    """
     assert first in list(
         range(3)
     ), f"first '{first}' must be a block index index [0,1,2]"
@@ -95,6 +131,17 @@ def switch_column_blocks(
 def switch_row_blocks(
     s: Sudoku, first: int, second: int, inplace: bool = False
 ) -> Sudoku:
+    """Switch the specified row blocks. Maintains Sudoku invariants.
+
+    Args:
+        s: Sudoku, the sudoku to transform
+        first: int, the index in [0,1,2] of the first row block to be switched.
+        second: int, the index in [0,1,2] of the second row block to be switched.
+        inplace: bool (default=False) perform the transformation inplace on the supplied sudoku.
+
+    Returns:
+        A transformed Sudoku.
+    """
     assert first in list(
         range(3)
     ), f"first '{first}' must be a block index index [0,1,2]"
@@ -122,6 +169,17 @@ def switch_row_blocks(
 
 
 def switch_numbers(s: Sudoku, first: int, second: int, inplace: bool = False) -> Sudoku:
+    """Switch the specified numbers across the Sudoku. Maintains Sudoku invariants.
+
+    Args:
+        s: Sudoku, the sudoku to transform
+        first: int, the first number to be switched.
+        first: int, the second number to be switched.
+        inplace: bool (default=False) perform the transformation inplace on the supplied sudoku.
+
+    Returns:
+        A transformed Sudoku.
+    """
     assert first in list(
         range(1, 10)
     ), f"first '{first}' must be a number in {range(1,10)}"
