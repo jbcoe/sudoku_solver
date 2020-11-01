@@ -1,9 +1,30 @@
 import numpy as np
+from textwrap import dedent
 
 
 class Sudoku:
-    def __init__(self):
+    COMPLETED_GRID = dedent(
+        """\
+        -------------
+        |123|456|789|
+        |456|789|123|
+        |789|123|456|
+        -------------
+        |234|567|891|
+        |567|891|234|
+        |891|234|567|
+        -------------
+        |345|678|912|
+        |678|912|345|
+        |912|345|678|
+        -------------
+        """
+    )
+
+    def __init__(self, grid_string=None):
         self.grid = np.array([[0] * 9] * 9, dtype=np.uint8)
+        if grid_string:
+            self.set(grid_string)
 
     def dump_py(self, name="s") -> str:
         dump = ""

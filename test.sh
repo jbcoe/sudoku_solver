@@ -13,4 +13,4 @@ fi
 python -m venv "${PYENV}"
 source "${PYENV}/bin/activate"
 pip install --upgrade -r requirements.txt
-python -m nose -v "${DIR}/sudoku"
+python -m nose -v "${DIR}/tests"

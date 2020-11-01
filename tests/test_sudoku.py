@@ -1,24 +1,6 @@
 import nose.tools
 from textwrap import dedent
-from . import Sudoku
-
-COMPLETED_GRID = dedent(
-    """\
-    -------------
-    |123|456|789|
-    |456|789|123|
-    |789|123|456|
-    -------------
-    |234|567|891|
-    |567|891|234|
-    |891|234|567|
-    -------------
-    |345|678|912|
-    |678|912|345|
-    |912|345|678|
-    -------------
-    """
-)
+from sudoku import Sudoku
 
 
 def test_empty_sudoku_repr():
@@ -106,14 +88,12 @@ def test_check_bad_column_sudoku():
 
 
 def test_completed_sudoku():
-    s = Sudoku()
-    s.set(COMPLETED_GRID)
+    s = Sudoku(Sudoku.COMPLETED_GRID)
     nose.tools.ok_(s.completed, "Sudoku is not solved")
 
 
 def test_broken_sudoku():
-    s = Sudoku()
-    s.set(COMPLETED_GRID)
+    s = Sudoku(Sudoku.COMPLETED_GRID)
     s[5, 5] = 1
     nose.tools.ok_(not s.completed, "Sudoku should be broken")
 
@@ -143,8 +123,7 @@ def test_some_empty_locations():
 
 
 def test_possibilities_when_completed():
-    s = Sudoku()
-    s.set(COMPLETED_GRID)
+    s = Sudoku(Sudoku.COMPLETED_GRID)
     for row in range(9):
         for column in range(9):
             nose.tools.eq_([s[row, column]], s.possible_entries[row, column])
@@ -160,9 +139,9 @@ def test_possibilities_when_empty():
 
 def test_possibilities_when_incomplete():
     s = Sudoku()
+    # Remove '1', '2' and the top-left block from a completed Sudoku.
     s.set(
         dedent(
-            # Remove '1', '2' and the top-left block from a completed Sudoku.
             """\
         -------------
         |000|456|789|
