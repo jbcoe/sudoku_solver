@@ -120,7 +120,7 @@ def test_possibilities_when_completed():
     s = Sudoku(Sudoku.COMPLETED_GRID)
     for row in range(9):
         for column in range(9):
-            assert [s[row, column]] == s.possible_entries[row, column]
+            assert [s[row, column]] == s.possible_entries(row, column)
 
 
 def test_possibilities_when_empty():
@@ -128,7 +128,7 @@ def test_possibilities_when_empty():
 
     for row in range(9):
         for column in range(9):
-            assert list(range(1, 10)) == s.possible_entries[row, column]
+            assert list(range(1, 10)) == s.possible_entries(row, column)
 
 
 def test_possibilities_when_incomplete():
@@ -154,14 +154,14 @@ def test_possibilities_when_incomplete():
         )
     )
 
-    assert s.possible_entries[0, 0] == [1, 2]
-    assert s.possible_entries[0, 1] == [1, 2]
-    assert s.possible_entries[0, 2] == [1, 2, 3]
+    assert s.possible_entries(0, 0) == [1, 2]
+    assert s.possible_entries(0, 1) == [1, 2]
+    assert s.possible_entries(0, 2) == [1, 2, 3]
 
-    assert s.possible_entries[1, 0] == [1, 2, 4]
-    assert s.possible_entries[1, 1] == [1, 2, 5]
-    assert s.possible_entries[1, 2] == [1, 2, 6]
+    assert s.possible_entries(1, 0) == [1, 2, 4]
+    assert s.possible_entries(1, 1) == [1, 2, 5]
+    assert s.possible_entries(1, 2) == [1, 2, 6]
 
-    assert s.possible_entries[2, 0] == [1, 2, 7]
-    assert s.possible_entries[2, 1] == [1, 2, 8]
-    assert s.possible_entries[2, 2] == [1, 2, 9]
+    assert s.possible_entries(2, 0) == [1, 2, 7]
+    assert s.possible_entries(2, 1) == [1, 2, 8]
+    assert s.possible_entries(2, 2) == [1, 2, 9]

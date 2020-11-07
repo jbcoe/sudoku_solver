@@ -1,3 +1,4 @@
+from typing import *
 import numpy as np
 from textwrap import dedent
 
@@ -25,6 +26,14 @@ class Sudoku:
         self.grid = np.array([[0] * 9] * 9, dtype=np.uint8)
         if grid_string:
             self.set(grid_string)
+        self._bool_buffer = np.array([False] * 10)
+        self._int_buffer = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    def __hash__(self):
+        return hash(self.grid.tobytes())
+
+    def __eq__(self, other):
+        return (self.grid == other.grid).all()
 
     def dump_py(self, name="s") -> str:
         dump = ""
@@ -35,6 +44,7 @@ class Sudoku:
         return dump
 
     def set(self, grid_string: str):
+        grid_string.replace(" ", "0")
         values = [int(c) for c in grid_string if c.isnumeric()]
         self.grid[:] = np.reshape(values, (9, 9))
 
@@ -60,40 +70,39 @@ class Sudoku:
         repr += line_break
         return repr
 
-    @property
-    def possible_entries(self):
-        assert self.check(), "Sudoku fails a self-check"
+    def block(self, row, column):
+        block_row = (row // 3) * 3
+        block_column = (column // 3) * 3
+        return self.grid[block_row : block_row + 3, block_column : block_column + 3]
 
-        class PossibleEntries:
-            def __init__(self, sudoku: "Soduku"):
-                self.sudoku = sudoku
+    def row(self, index):
+        return self.grid[index, :]
 
-            def __getitem__(self, row_column):
-                row, column = row_column
-                if self.sudoku[row, column] != 0:
-                    return [self.sudoku[row, column]]
+    def column(self, index):
+        return self.grid[:, index]
 
-                possibilities = set(range(10))
-                for i in range(9):
-                    possibilities.discard(self.sudoku[i, column])
-                for j in range(9):
-                    possibilities.discard(self.sudoku[row, j])
+    def possible_entries(self, row: int, column: int) -> List[int]:
+        if self.grid[row, column] != 0:
+            return [self.grid[row, column]]
 
-                block_row = row // 3
-                block_column = column // 3
-                for i in range(3):
-                    for j in range(3):
-                        possibilities.discard(
-                            self.sudoku[block_row + i, block_column + j]
-                        )
-                return sorted(list(possibilities))
+        possibilities = self._bool_buffer
+        possibilities[1:] = True
 
-        return PossibleEntries(self)
+        for element in self.row(row):
+            possibilities[element] = False
+        for element in self.column(column):
+            possibilities[element] = False
+        for element in list(self.block(row, column)):
+            possibilities[element] = False
+
+        rv = np.array(self._int_buffer[possibilities == True])
+        possibilities[1:] = False
+        return rv
 
     def _check_row(self, row):
-        number_count = {x + 1: 0 for x in range(9)}
+        number_count = np.zeros(10)
         for number in self.grid[row, 0:]:
-            if number in number_count.keys():
+            if number > 0:
                 number_count[number] += 1
                 if number_count[number] > 1:
                     return False
@@ -106,9 +115,9 @@ class Sudoku:
         return True
 
     def _check_column(self, column):
-        number_count = {x + 1: 0 for x in range(9)}
+        number_count = np.zeros(10)
         for number in self.grid[0:, column]:
-            if number in number_count.keys():
+            if number > 0:
                 number_count[number] += 1
                 if number_count[number] > 1:
                     return False
@@ -121,11 +130,11 @@ class Sudoku:
         return True
 
     def _check_block(self, row_offset, column_offset):
-        number_count = {x + 1: 0 for x in range(9)}
+        number_count = np.zeros(10)
         for row in [0, 1, 2]:
             for column in [0, 1, 2]:
-                number: int = self[row_offset + row, column_offset + column]
-                if number in number_count.keys():
+                number: int = self.grid[row_offset + row, column_offset + column]
+                if number > 0:
                     number_count[number] += 1
                     if number_count[number] > 1:
                         return False
@@ -148,6 +157,10 @@ class Sudoku:
         return True
 
     @property
+    def ok(self):
+        return self.check()
+
+    @property
     def empty_locations(self):
         locations = []
         for column, line in enumerate(self.grid):
@@ -158,7 +171,7 @@ class Sudoku:
 
     @property
     def completed(self):
-        return self.check() and not self.empty_locations
+        return not 0 in self.grid and self.ok
 
     def __getitem__(self, row_column):
         row, column = row_column

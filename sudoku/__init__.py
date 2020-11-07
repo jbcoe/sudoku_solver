@@ -1,4 +1,5 @@
 from .sudoku import Sudoku
+from .solve import solve
 from .transformer import switch_column_blocks
 from .transformer import switch_row_blocks
 from .transformer import switch_rows
